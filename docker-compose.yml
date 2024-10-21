@@ -1,0 +1,59 @@
+version: '3'
+services:
+  mysql_master: &mysql
+    image: mysql:8.0
+    env_file:
+      - ./docker/mysql/master/mysql-master.env
+    container_name: 'mysql_master'
+    hostname: 'mysql_master'
+    restart: "no"
+    command: [
+      'mysqld',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-authentication-plugin=mysql_native_password',
+      '--wait_timeout=28800',
+      '--sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION',
+      '--log_bin_trust_function_creators=1'
+    ]
+    ports:
+      - 4406:3306
+    volumes:
+      - ./docker/mysql/master/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./docker/mysql/master/data:/var/lib/mysql
+    networks:
+      - overlay
+
+  mysql_slave:
+    <<: *mysql
+    env_file:
+      - ./docker/mysql/slave-01/mysql-slave.env
+    container_name: 'mysql_slave'
+    hostname: 'mysql_slave'
+    ports:
+      - 5506:3306
+    volumes:
+      - ./docker/mysql/slave-01/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./docker/mysql/slave-01/data:/var/lib/mysql
+    depends_on:
+      - mysql_master
+
+  # mysql_slave_02:
+  #   <<: *mysql
+  #   env_file:
+  #     - ./docker/mysql/slave-02/mysql-slave.env
+  #   container_name: 'mysql_slave_02'
+  #   hostname: 'mysql_slave_02'
+  #   ports:
+  #     - 6606:3306
+  #   volumes:
+  #     - ./docker/mysql/slave-02/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+  #     - ./docker/mysql/slave-02/data:/var/lib/mysql
+  #   depends_on:
+  #     - mysql_master
+  #     - mysql_slave
+
+networks:
+  overlay:
+    external: true
+

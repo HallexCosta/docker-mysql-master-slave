@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+data
+!docker/mysql/**/data/.gitkeep
+docker/mysql/**/data/
+.git-bkp

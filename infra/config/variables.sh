@@ -1,0 +1,8 @@
+#!/bin/bash
+MYSQL_HOST_MASTER=mysql_master
+MYSQL_USER_MASTER=hallexcosta_master
+MYSQL_PASSWORD_MASTER=hallexcosta_master_123
+MYSQL_ROOT_PASSWORD=secret
+
+MYSQL_USER_SLAVE=hallexcosta_slave_01
+MYSQL_PASSWORD_SLAVE=hallexcosta_slave_01_123
